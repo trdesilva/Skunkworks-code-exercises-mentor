@@ -6,7 +6,7 @@
 
 #include <vector>
 
-static unsigned int RAND_SEED = 0;
+static unsigned int randSeed = 0;
 
 class Encoder
 {
@@ -20,8 +20,9 @@ public:
     Encoder(Motor* motor);
     Encoder(const Encoder& encoder);
     
-    void reset();
+    void reset(bool resetSpeed);
     void update();
+    void setRandSeed(int seed);
     
     int getRaw() const;
     double getPosition() const;

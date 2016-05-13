@@ -18,12 +18,15 @@ Encoder::Encoder(const Encoder& other)
 /**
 * Reset the encoder's position to 0.
 */
-void Encoder::reset()
+void Encoder::reset(bool resetSpeed)
 {
     count = 0;
-    for(int i = 0; i < LOOPS_ACCELERATION; i++)
+    if(resetSpeed)
     {
-        speed[i] = 0.;
+		for(int i = 0; i < LOOPS_ACCELERATION; i++)
+		{
+		    speed[i] = 0.;
+		}
     }
 }
 
@@ -35,7 +38,7 @@ void Encoder::update()
 {
     double output = motor->getOutput();
     // add pseudorandom noise from -10 to 10 scaling with output
-    int noise = ((rand_r(&RAND_SEED) % (2*ACCURACY_COUNTS + 1)) - ACCURACY_COUNTS)*output;
+    int noise = ((rand_r(&randSeed) % (2*ACCURACY_COUNTS + 1)) - ACCURACY_COUNTS)*output;
     
     for(int i = 1; i < LOOPS_ACCELERATION; i++)
     {
@@ -45,6 +48,15 @@ void Encoder::update()
     speed[0] = (output + (double)noise/COUNTS_PER_REV)*LOOPS_PER_SEC;
     
     count += COUNTS_PER_REV*getSpeed()/LOOPS_PER_SEC;
+}
+
+/**
+* Allows the rand_r() seed to be set. This method makes unit testing easier by making the randomness persistant across 
+* multiple tests.
+*/
+void Encoder::setRandSeed(int seed)
+{
+	randSeed = seed;
 }
 
 /**

@@ -1,12 +1,9 @@
-all: Motor.o Encoder.o PIDController.o
-	g++ Motor.o Encoder.o PIDController.o main.cpp -o PIDSim
-Motor.o: Constants.h Outputable.h Motor.h Motor.cpp
-	g++ Constants.h Outputable.h Motor.h Motor.cpp -c
-Encoder.o: Motor.o Encoder.h Encoder.cpp
-	g++ Motor.o Encoder.h Encoder.cpp -c
-PIDController.o: Motor.o Encoder.o PIDController.h PIDController.cpp
-	g++ Motor.o Encoder.o PIDController.h PIDController.cpp -c
-tests: Motor.o Encoder.o PIDController.o tests.cpp
-	g++ -I. Motor.o Encoder.o PIDController.o gtest/gtest.h tests.cpp -Lgtest -lgtest -lpthread -o tests
+all: PIDSim tests
+PIDController.o: Constants.h Outputable.h Motor.h Motor.cpp Encoder.h Encoder.cpp PIDController.h PIDController.cpp
+	g++ Constants.h Outputable.h Motor.h Motor.cpp Encoder.h Encoder.cpp PIDController.h PIDController.cpp -c
+PIDSim: PIDController.o
+	g++ PIDController.o main.cpp -o PIDSim
+tests: PIDController.o tests.cpp
+	g++ -I. PIDController.o gtest/gtest.h tests.cpp -Lgtest -lgtest -lpthread -o tests
 clean:
 	rm -f PIDSim tests *.o *.gch

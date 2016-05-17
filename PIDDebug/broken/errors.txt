@@ -34,12 +34,11 @@ PIDController.h:18:16: error: cannot declare field â€˜PIDController::outputableâ
 ---LOGIC---
 
 move bounds checking if statements in Motor::set() to after this->output assignment; allows motor to drive at >100% power
-
 flip signs on bounds checking
 
 remove division by LOOPS_PER_SECOND in Encoder::update(); will make motor position change 50x faster than it should
 
-remove mode == POSITION_REV case in PIDController::update() and PIDController::onTarget(); will make position PID behave as speed PID
+remove mode == POSITION_REV case in PIDController::update(); will make position PID behave as speed PID
 
 swap setpoint and curr at double error = setpoint - curr in PIDController::update(); will make PID operate backward
 
@@ -47,13 +46,11 @@ change "<"s to ">"s in PIDController::onTarget(); negates onTarget()'s intended 
 
 remove double cast on noise in Encoder::update(); will remove all randomness from encoder readings
 
-define ACCURACY_COUNTS as 20 in Encoder.h before #include "Constants.h" and redefine ACCURACY_COUNTS as 0 in Constants.h; will remove all randomness from encoder readings
+define ACCURACY_COUNTS as 10 in Encoder.h before #include "Constants.h" and redefine ACCURACY_COUNTS as 0 in Constants.h; will remove all randomness from encoder readings
 
 change encoder to be of non-pointer type in PIDController.h and PIDController.cpp, and move encoder initialization to an initializer list; will prevent the real encoder object from being updated but not cause a compile error
 
-have the pid reset fuction not reset one of the variables
-
-remove conditional in PIDController::setMode()
+have the pid reset fuction not reset one of the valiables
 
 
 ---CRASHES---

@@ -63,6 +63,29 @@ protected:
 	}
 };
 
+class PIDControllerTest: public ::testing::Test
+{
+protected:
+	Motor* motor;
+	Encoder* encoder;
+	PIDController* pidController;
+	
+	virtual void SetUp()
+	{
+		motor = new Motor(0);
+		encoder = new Encoder(motor);
+		encoder->setRandSeed(0);
+		pidController = new PIDController(motor, encoder, POSITION_RAW, 0, 0, 0, 0);
+	}
+	
+	virtual void TearDown()
+	{
+		delete encoder;
+		delete motor;
+		delete pidController;
+	}
+};
+
 // Tests
 // These are function-like macros that run pieces of code and make sure that the right things happen.
 
@@ -171,6 +194,137 @@ TEST_F(EncoderTest, updateUsesCorrectAmountOfRandomness)
 	ASSERT_EQ(speed, encoder->getSpeed());
 }
 
+TEST_F(PIDControllerTest, basicVerificationTest)
+{
+	int loops = 0;
+	int onTargetLoops = 0;
+	// Check that position mode works as expected
+	printf("Setting PIDF values to [ 1 0.001 0.01 0 ]\n");
+	pidController->setConstants(1, 0.001, .01, 0);
+	printf("Setting setpoint to 10 revolutions\n");
+	pidController->setSetpoint(10);
+	pidController->setMode(POSITION_REV);
+	
+	pidController->enable();
+	while(onTargetLoops < 10)
+	{
+		pidController->update();
+		
+		if(pidController->onTarget())
+		{
+			onTargetLoops++;
+		}
+		else if(onTargetLoops > 0)
+		{
+			onTargetLoops--;
+		}
+		
+		loops++;
+	}
+	
+	printf("Verifying that PID took 97 loops to settle\n");
+	EXPECT_EQ(97, loops);
+	
+	printf("Verifying that encoder position is within tolerance\n");
+	EXPECT_LT(10 - POSITION_REV_TOLERANCE, encoder->getPosition());
+	EXPECT_GT(10 + POSITION_REV_TOLERANCE, encoder->getPosition());
+	
+	printf("Resetting PIDController and encoder for next test\n");
+	pidController->reset();
+	encoder->reset(true);
+	encoder->setRandSeed(0);
+	loops = 0;
+	onTargetLoops = 0;
+	
+	// Check that raw position mode works as expected
+	printf("Setting PIDF values to [ 0.001 0.000001 0.001 0 ]\n");
+	pidController->setConstants(.001, 0.000001, .001, 0);
+	printf("Setting setpoint to 10240 ticks\n");
+	pidController->setSetpoint(10240);
+	pidController->setMode(POSITION_RAW);
+	
+	pidController->enable();
+	while(onTargetLoops < 10)
+	{
+		pidController->update();
+		
+		if(pidController->onTarget())
+		{
+			onTargetLoops++;
+		}
+		else if(onTargetLoops > 0)
+		{
+			onTargetLoops--;
+		}
+		
+		loops++;
+	}
+	
+	printf("Verifying that PID took 104 loops to settle\n");
+	EXPECT_EQ(104, loops);
+	
+	printf("Verifying that encoder position is within tolerance\n");
+	EXPECT_LT(10240 - POSITION_RAW_TOLERANCE, encoder->getRaw());
+	EXPECT_GT(10240 + POSITION_RAW_TOLERANCE, encoder->getRaw());
+	
+	printf("Resetting PIDController and encoder for next test\n");
+	pidController->reset();
+	encoder->reset(true);
+	encoder->setRandSeed(0);
+	loops = 0;
+	onTargetLoops = 0;
+	
+	// Check that speed mode works as expected
+	printf("Setting PIDF values to [ 0.01 0.1 0.00001 0.01 ]\n");
+	pidController->setConstants(.01, 0.1, .00001, 0.01);
+	printf("Setting setpoint to 10 revolutions per second\n");
+	pidController->setSetpoint(10);
+	pidController->setMode(SPEED);
+	
+	pidController->enable();
+	while(onTargetLoops < 10)
+	{
+		pidController->update();
+		
+		if(pidController->onTarget())
+		{
+			onTargetLoops++;
+		}
+		else if(onTargetLoops > 0)
+		{
+			onTargetLoops--;
+		}
+		
+		loops++;
+	}
+	
+	printf("Verifying that PID took 32 loops to settle\n");
+	EXPECT_EQ(32, loops);
+	
+	printf("Verifying that encoder position is within tolerance\n");
+	EXPECT_LT(10 - SPEED_TOLERANCE, encoder->getSpeed());
+	EXPECT_GT(10 + SPEED_TOLERANCE, encoder->getSpeed());
+	
+	printf("Resetting PIDController and encoder for next test\n");
+	pidController->reset();
+	encoder->reset(true);
+	encoder->setRandSeed(0);
+	loops = 0;
+	onTargetLoops = 0;
+	
+	// Check that PID doesn't run when disabled
+	printf("Verifying that PID can't run while disabled\n");
+	pidController->update();
+	EXPECT_EQ(0, motor->getOutput());
+	
+	// Check that mode can't be changed when PID is enabled
+	printf("Verifying that control mode can't be changed while PID is running\n");
+	pidController->enable();
+	pidController->setMode(POSITION_RAW);
+	
+	ASSERT_EQ(SPEED, pidController->getMode());
+}
+
 double getInstSpeed(unsigned int* seedPtr, double output)
 {
 	int noise = ((rand_r(seedPtr) % (2*ACCURACY_COUNTS + 1)) - ACCURACY_COUNTS)*output;
@@ -180,6 +334,11 @@ double getInstSpeed(unsigned int* seedPtr, double output)
 int main(int argc, char** argv)
 {
 	::testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
+	int fail = RUN_ALL_TESTS();
+	if(!fail)
+	{
+		printf("\n\n******************************\n* Congratulations, it works! *\n******************************\n");
+	}
+	return fail;
 }
 

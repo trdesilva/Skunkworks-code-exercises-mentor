@@ -49,7 +49,6 @@ void PIDController::update()
         lastError = error;
         
         outputable->set(output);
-        std::cout << "output: " << output << "\n";
     }
     else
     {
@@ -83,6 +82,7 @@ void PIDController::enable()
 void PIDController::disable()
 {
     enabled = false;
+	outputable->set(0);
 }
 
 /**
@@ -91,6 +91,26 @@ void PIDController::disable()
 void PIDController::setSetpoint(double setpoint)
 {
     this->setpoint = setpoint;
+}
+
+/**
+* Update the values of P, I, D, and F. F defaults to 0.
+*/
+void PIDController::setConstants(double p, double i, double d, double f)
+{
+	this->p = p;
+	this->i = i;
+	this->d = d;
+	this->f = f;
+}
+
+/**
+* Update the control mode. This changes the value that the PIDController reads from the Encoder in update(). Th options are
+* POSITION_RAW, POSITION_REV, and SPEED.
+*/
+void PIDController::setMode(PIDControllerMode mode)
+{
+	if(!enabled) this->mode = mode;
 }
 
 /**
@@ -110,5 +130,13 @@ bool PIDController::onTarget() const
     {
         return std::fabs(encoder->getSpeed() - setpoint) < SPEED_TOLERANCE;
     }
+}
+
+/**
+* Returns the current control mode.
+*/
+PIDControllerMode PIDController::getMode()
+{
+	return mode;
 }
 

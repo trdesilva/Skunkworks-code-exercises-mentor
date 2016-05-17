@@ -37,8 +37,11 @@ public:
     void enable();
     void disable();
     void setSetpoint(double setpoint);
+	void setConstants(double p, double i, double d, double f = 0);
+	void setMode(PIDControllerMode mode);
     
     bool onTarget() const;
+	PIDControllerMode getMode();
 };
 
 #endif

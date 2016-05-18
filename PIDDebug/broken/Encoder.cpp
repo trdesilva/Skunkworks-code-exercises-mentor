@@ -37,7 +37,7 @@ void Encoder::reset(bool resetSpeed)
 void Encoder::update()
 {
     double output = motor->getOutput();
-    // add pseudorandom noise from -10 to 10 scaling with output
+    // add pseudorandom noise from -20 to 20 scaling with output
     int noise = ((rand_r(&randSeed) % (2*ACCURACY_COUNTS + 1)) - ACCURACY_COUNTS)*output;
     
     while(i != LOOPS_ACCELERATION - 1)

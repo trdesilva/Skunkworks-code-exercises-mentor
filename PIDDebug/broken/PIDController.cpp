@@ -63,7 +63,7 @@ void PIDController::reset()
 }
 
 /**
-* Enables the PID.
+* Enables the PID. Prevents the control mode from being changed.
 */
 void PIDController::enable()
 {
@@ -99,7 +99,7 @@ void PIDController::setConstants(double p, double i, double d, double f)
 }
 
 /**
-* Update the control mode. This changes the value that the PIDController reads from the Encoder in update(). Th options are
+* Update the control mode. This changes the value that the PIDController reads from the Encoder in update(). The options are
 * POSITION_RAW, POSITION_REV, and SPEED.
 */
 void PIDController::setMode(PIDControllerMode mode)

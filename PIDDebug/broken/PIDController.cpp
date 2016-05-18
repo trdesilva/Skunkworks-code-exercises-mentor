@@ -63,7 +63,7 @@ void PIDController::reset()
 }
 
 /**
-* Enables the PID.
+* Enables the PID. Prevents the control mode from being changed.
 */
 void PIDController::enable()
 {

@@ -6,3 +6,6 @@ Debugging practice using simulated PID controllers, encoders, and motors. Studen
 
 #robotInventory
 Coding practice with arrays, loops, conditionals, and strings. Students will work on the basics of C++ while making a program to track what parts are present on a robot.
+
+#linkedList
+Coding and design practice with classes and pointers. Students will learn about dealing with references and designing object-oriented code as they solve a canonical programming problem. This exercise also serves as an introduction to dynamic data structures.

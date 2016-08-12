@@ -25,13 +25,13 @@ void LinkedList::insert(int newValue, int index)
 
 }
 
-// Remove a node from the front of the list
+// Remove a node from the front of the list, returning the value stored in the node
 int LinkedList::pop()
 {
     return 0;
 }
 
-// Remove the node at the specified index
+// Remove the node at the specified index, returning the value stored in the node
 int LinkedList::remove(int index)
 {
     return 0;

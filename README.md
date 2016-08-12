@@ -5,3 +5,6 @@ This repo contains a number of programming exercises of various difficulty level
 Debugging practice using simulated PID controllers, encoders, and motors. Students will solve a variety of common compile errors, runtime crashes and logic mistakes while fixing the supplied broken program. Students will be taught about basic debugger features to help with this project. The fully-working program is a useful tool for learning about and examining the functionality of PID controllers.
 
 Difficulty: High
+
+#robotInventory
+Coding practice with arrays, loops, conditionals, and strings. Students will work on the basics of C++ while making a program to track what parts are present on a robot.

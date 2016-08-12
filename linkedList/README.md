@@ -19,5 +19,7 @@ If you need help, ask a mentor. Be careful about searching the internet for help
 
 # Extensions
 Once you're done, you can make these additions:
+
 1. Your current implementation is a *singly-linked list*, meaning that each node only has a pointer to the next node. Change it to a *doubly-linked list*, where each node has a pointer to the next node and the previous node.
 2. Replace iteration (loops) with recursive function calls without changing the overall functionality of the list.
+3. Templatize your linked list so it can store arbitrary data types instead of just ints and create an iterator.

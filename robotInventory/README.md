@@ -13,7 +13,7 @@ Your task is to create a program that functions as an inventory for parts of a r
     Name a part:
     $:(
 
-... and so on. 
+... and so on. To compile and run your code, either import this directory into Eclipse as a makefile project, or run the command "make" in a command shell and run the "robotInventory" executable produced.
 
 # Background
 To do this, you'll need to know or learn about:

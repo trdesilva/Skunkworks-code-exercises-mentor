@@ -3,10 +3,16 @@
 This project has a simulated motor, encoder, and PID controller, but at the moment, it's pretty broken. Your task is to get it back in working order and to get the tests to pass. Each of the three classes is updated at discrete timesteps, the length of which is defined in Constants. The Motor is a simple class; it's more or less a container for an output percentage (-1 to 1) that the Encoder can read from and the PIDController can write to. The Encoder is a bit more complex: it takes the current motor output, adds some random noise to it, and stores the expected speed value in a shift register. The expected speeds in the shift register are used to calculate a weighted rolling average over the last few ticks, which simulates the motor having inertia. The "actual" speed is then used to determine the change in position for the timestep. The PIDController (actually a PIDFController) acts as one would expect a PID controller to. It reads the relevant input value from the Encoder for the control mode it's in--position in rotations, position in ticks, or speed in rotations per second. It does the relevant math and sends the output to the Motor. If the PID is disabled, it sends the Motor a 0 for the output.
 
 To run the tests:
+
 1. Compile the project by calling "make all" in a terminal (use Cygwin in Windows). This will compile and build the code into a shared library that the test executable links to.
-1a. If you're on Linux, you'll need to set the library search path so the test executable can find your library. Run "source linux-lib-path.sh"; it should automatically set the path.
-2a. If you're on Windows, run tests.exe to test your implementation.
-2b. If you're on Linux, run tests with no extension.
+
+    a. If you're on Linux, you'll need to set the library search path so the test executable can find your library. Run "source linux-lib-path.sh"; it should automatically set the path.
+
+2. Run the tests executable to test your implementation.
+
+    a. If you're on Windows, use tests.exe.
+
+    b. If you're on Linux, use tests with no extension.
 
 Once the tests run successfully, you're done.
 

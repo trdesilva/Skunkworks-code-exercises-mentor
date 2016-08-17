@@ -1,19 +1,28 @@
 // Class for running a game of Ghost using multiple GhostPlayers
+#ifndef GHOSTGAMEHANDLER_H
+#define GHOSTGAMEHANDLER_H
+
 #include <string>
 #include <vector>
 #include <utility>
+#include <map>
+
+#include "MyTrie.h"
 
 class GhostPlayer;
 
 class GhostGameHandler
 {
 private:
-	std::vector<std::string> wordList;
+	MyTrie wordTrie;
+	std::map<GhostPlayer*, int> scoreMap;
 	GhostGameHandler();
+	static GhostGameHandler* instance;
 	
 public:
-	void runGame(std::string wordsFilePath, std::vector<GhostPlayer> players);
-	static GhostGameHandler getInstance();
+	void runGame(std::string wordsFilePath, std::vector<GhostPlayer*> players);
+	static GhostGameHandler* getInstance();
 	
 	std::vector<std::pair<std::string, int> > getRemainingPlayers();
 };
+#endif

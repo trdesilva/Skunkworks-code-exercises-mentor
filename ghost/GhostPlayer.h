@@ -1,6 +1,8 @@
 // Virtual class for you to use in implementing your own Ghost player
-#include <string>
+#ifndef GHOSTPLAYER_H
+#define GHOSTPLAYER_H
 
+#include <string>
 class GhostPlayer
 {
 public:
@@ -9,3 +11,4 @@ public:
 	virtual std::string getNextLetter(std::string currentStr)=0;
 	virtual std::string getName()=0;
 };
+#endif

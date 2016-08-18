@@ -1,15 +1,10 @@
 #include "MyTrie.h"
+#include "GhostGameHandler.h"
 #include <iostream>
+#include <vector>
 
 int main(int argc, char** argv)
 {
-	MyTrie* trie = new MyTrie();
-	trie->addChild('a', false);
-	trie->getChild('a')->addChild('b', false);
-	trie->getDeepChild("ab")->addChild('c', true);
-	
-	MyTrie* word = trie->getDeepChild("abc");
-	if(word->isTerminal())
-		std::cout << "true";
+	GhostGameHandler::getInstance()->runGame("words.txt", std::vector<GhostPlayer*>());
 	return 0;
 }

@@ -15,9 +15,12 @@ class GhostGameHandler
 {
 private:
 	MyTrie wordTrie;
+	bool inProgress;
 	std::map<GhostPlayer*, int> scoreMap;
 	GhostGameHandler();
 	static GhostGameHandler* instance;
+	
+	void readWords(std::string filePath);
 	
 public:
 	void runGame(std::string wordsFilePath, std::vector<GhostPlayer*> players);

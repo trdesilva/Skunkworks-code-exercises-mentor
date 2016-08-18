@@ -26,5 +26,6 @@ public:
 	void addChild(char letter, bool terminal);
 	
 	MyTrie* getDeepChild(std::string path);
+	void addDeepChild(std::string path);
 };
 #endif

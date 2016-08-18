@@ -64,3 +64,12 @@ MyTrie* MyTrie::getDeepChild(std::string path)
 		}
 	}
 }
+
+void MyTrie::addDeepChild(std::string path)
+{
+	if(path.size() == 0) return;
+	
+	char next = path[0];
+	if(getChild(next) == NULL) addChild(next, path.size() == 1);
+	getChild(next)->addDeepChild(path.substr(1));
+}

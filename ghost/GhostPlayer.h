@@ -6,9 +6,9 @@
 class GhostPlayer
 {
 public:
-	GhostPlayer();
+	GhostPlayer(){};
 	virtual void readWords(std::string wordsFilePath)=0;
-	virtual std::string getNextLetter(std::string currentStr)=0;
+	virtual char getNextLetter(std::string currentStr)=0;
 	virtual std::string getName()=0;
 };
 #endif

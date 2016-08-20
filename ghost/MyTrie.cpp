@@ -73,3 +73,8 @@ void MyTrie::addDeepChild(std::string path)
 	if(getChild(next) == NULL) addChild(next, path.size() == 1);
 	getChild(next)->addDeepChild(path.substr(1));
 }
+
+bool MyTrie::hasChildren()
+{
+	return !children.empty();
+}

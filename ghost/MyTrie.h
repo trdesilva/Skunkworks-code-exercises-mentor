@@ -27,5 +27,6 @@ public:
 	
 	MyTrie* getDeepChild(std::string path);
 	void addDeepChild(std::string path);
+	bool hasChildren();
 };
 #endif

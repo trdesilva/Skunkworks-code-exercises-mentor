@@ -2,6 +2,8 @@
 #include <map>
 #include <stdlib.h>
 #include <string>
+#include <stdexcept>
+#include <ctype.h>
 
 MyTrie::MyTrie(MyTrie* parent, bool terminal)
 {
@@ -42,6 +44,8 @@ bool MyTrie::isTerminal()
 void MyTrie::addChild(char letter, bool terminal)
 {
 	MyTrie* child = new MyTrie(this, terminal);
+	letter = tolower(letter);
+	if(letter < 'a' || 'z' < letter) throw std::invalid_argument("letter");
 	children[letter] = child;
 }
 

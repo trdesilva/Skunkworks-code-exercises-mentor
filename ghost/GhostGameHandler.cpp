@@ -3,12 +3,14 @@
 #include <utility>
 #include <fstream>
 #include <stdio.h>
-#include <pthread.h>
-#include <exception>
+#include <stdexcept>
 #include <algorithm>
 #include <ctime>
 #include <errno.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <signal.h>
 
 #include "GhostGameHandler.h"
 #include "GhostPlayer.h"
@@ -17,7 +19,6 @@
 #define READ_WORDS_TIMEOUT_SEC 5
 
 GhostGameHandler* GhostGameHandler::instance = NULL;
-pthread_mutex_t mutex;
 
 GhostGameHandler::GhostGameHandler()
 {
@@ -36,7 +37,16 @@ void GhostGameHandler::readWords(std::string filePath)
 		file.getline(word, 32);
 		if(word[0] != '\0')
 		{
-			wordTrie.addDeepChild(std::string(word));
+			try
+			{
+				wordTrie.addDeepChild(std::string(word));
+			}
+			catch(std::invalid_argument e)
+			{
+				fprintf(stderr, "Word list contains %s, which contains a non-alphabetic character; terminating\n", word);
+				file.close();
+				exit(EXIT_FAILURE);
+			}
 			wordCount++;
 		}
 	}
@@ -44,24 +54,23 @@ void GhostGameHandler::readWords(std::string filePath)
 	printf("Successfully read %d words\n", wordCount);
 }
 
-bool GhostGameHandler::babysitThread(pthread_t thread, int timeout)
+bool GhostGameHandler::babysitProcess(pid_t pid, int timeout)
 {
-	void* status;
-	int retVal;
+	int status;
+	pid_t retVal;
 	std::time_t startTime = std::time(NULL);
 	bool failure = true;
 	while(std::difftime(std::time(NULL), startTime) < timeout)
 	{
-		retVal = pthread_mutex_trylock(&mutex);
-		if(retVal == EBUSY) // thread still working
+		retVal = waitpid(pid, &status, WNOHANG);
+		if(retVal == 0) // process still working
 		{
 			usleep(250000);
 			continue;
 		}
-		else if(retVal == 0) // thread finished
+		else if(retVal == pid) // process finished
 		{
-			retVal = pthread_join(thread, &status);
-			if(!(retVal || status))
+			if(!status)
 			{
 				failure = false;
 			}
@@ -74,7 +83,10 @@ bool GhostGameHandler::babysitThread(pthread_t thread, int timeout)
 		}
 	}
 	
-	
+	if(retVal != pid) //process never came back
+	{
+		kill(pid, SIGKILL);
+	}
 	return failure;
 }
 
@@ -100,59 +112,50 @@ void GhostGameHandler::addStrike(GhostPlayer* player)
 	printf("Player %s now has %s\n", player->getName().c_str(), GHOST.substr(0, scoreMap[player]).c_str());
 }
 
-void* GhostGameHandler::readWordsTask(void* args)
+void GhostGameHandler::readWordsTask(GhostPlayer* player, std::string filePath)
 {
-	ThreadArg* threadArg = (ThreadArg*)args;
 	try
 	{
-		pthread_mutex_lock(&mutex);
-		threadArg->player->readWords(*(threadArg->argString));
-		printf("Player %s successfully read the word list\n", threadArg->player->getName().c_str());
-		pthread_mutex_unlock(&mutex);
-		pthread_exit(NULL);
+		player->readWords(filePath);
+		printf("Player %s successfully read the word list\n", player->getName().c_str());
+		exit(EXIT_SUCCESS);
 	}
 	catch(...)
 	{
-		printf("Player %s threw an exception while reading the word list\n", threadArg->player->getName().c_str());
-		pthread_mutex_unlock(&mutex);
-		pthread_exit((void*)1);
+		fprintf(stderr, "Player %s threw an exception while reading the word list\n", player->getName().c_str());
+		exit(EXIT_FAILURE);
 	}
 }
 
-void* GhostGameHandler::getNextLetterTask(void* args)
+void GhostGameHandler::getNextLetterTask(GhostPlayer* player, std::string currWord, int pipeFd)
 {
-	ThreadArg* threadArg = (ThreadArg*)args;
 	try
 	{
-		pthread_mutex_lock(&mutex);
-		char letter = threadArg->player->getNextLetter(*(threadArg->argString));
+		char letter = tolower(player->getNextLetter(currWord));
 		if('a' <= letter && letter <= 'z')
 		{
-			printf("Player %s successfully chose letter %c\n", threadArg->player->getName().c_str(), letter);
+			printf("Player %s successfully chose letter %c\n", player->getName().c_str(), letter);
 		}
 		else if(letter == CHALLENGE_CHAR)
 		{
-			printf("Player %s challenges the current string\n", threadArg->player->getName().c_str());
+			printf("Player %s challenges the current string\n", player->getName().c_str());
 		}
 		else if(letter == FORFEIT_CHAR)
 		{
-			printf("Player %s forfeits the round\n", threadArg->player->getName().c_str());
+			printf("Player %s forfeits the round\n", player->getName().c_str());
 		}
 		else
 		{
-			printf("Player %s submits invalid letter %c\n", threadArg->player->getName().c_str(), letter);
-			pthread_mutex_unlock(&mutex);
-			pthread_exit((void*)1);
+			fprintf(stderr, "Player %s submits invalid letter %c\n", player->getName().c_str(), letter);
+			exit(EXIT_FAILURE);
 		}
-		*(threadArg->argString) += letter;
-		pthread_mutex_unlock(&mutex);
-		pthread_exit(NULL);
+		write(pipeFd, &letter, 1);
+		exit(EXIT_SUCCESS);
 	}
 	catch(...)
 	{
-		printf("Player %s threw an exception while choosing a move\n", threadArg->player->getName().c_str());
-		pthread_mutex_unlock(&mutex);
-		pthread_exit((void*)1);
+		fprintf(stderr, "Player %s threw an exception while choosing a move\n", player->getName().c_str());
+		exit(EXIT_FAILURE);
 	}
 }
 
@@ -176,40 +179,28 @@ void GhostGameHandler::runGame(std::string wordsFilePath, std::vector<GhostPlaye
 		
 		for(int i = 0; i < players.size(); i++)
 		{
-			// use a thread with a timeout to make each player read words
-			pthread_t readThread;
-			pthread_mutex_init(&mutex, NULL);
-			ThreadArg readThreadArg = ThreadArg();
-			readThreadArg.player = players[i];
-			readThreadArg.argString = &wordsFilePath;
+			// use a fork with a timeout to make each player read words
 			printf("Starting word list read for player %s\n", players[i]->getName().c_str());
-			pthread_attr_t attr;
-			pthread_attr_init(&attr);
-			pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-			int retVal = pthread_create(&readThread, &attr, readWordsTask, (void*)&readThreadArg);
-			if(retVal)
+			pid_t pid = fork();
+			if(pid == 0) // child
 			{
-				printf("Read failed for player %s, kicking from game\n", players[i]->getName().c_str());
-				playerList.erase(std::remove(playerList.begin(), playerList.end(), players[i]), playerList.end());
-				// TODO apparently pthread_cancel() doesn't work in C++; replace with pthread_kill() and signal handling
-				pthread_cancel(readThread);
-				pthread_mutex_destroy(&mutex);
-				continue;
+				readWordsTask(players[i], wordsFilePath);
 			}
-			usleep(1); // yield to new thread so it can start
-			
-			// monitor thread to see if it finishes, cancel if not
-			bool failure = babysitThread(readThread, READ_WORDS_TIMEOUT_SEC);
-			
-			pthread_attr_destroy(&attr);
-			pthread_mutex_destroy(&mutex);
-			
-			if(failure)
+			else if(pid == -1)
 			{
-				printf("Read failed for player %s, kicking from game\n", players[i]->getName().c_str());
-				playerList.erase(std::remove(playerList.begin(), playerList.end(), players[i]), playerList.end());
-				pthread_cancel(readThread);
-				continue;
+				fprintf(stderr, "Failed to create read process for player %s; ending game\n", players[i]->getName().c_str());
+				return;
+			}
+			else
+			{
+				// monitor child to see if it finishes, cancel if not
+				bool failure = babysitProcess(pid, READ_WORDS_TIMEOUT_SEC);
+				if(failure)
+				{
+					printf("Read failed for player %s; kicking from game\n", players[i]->getName().c_str());
+					playerList.erase(std::remove(playerList.begin(), playerList.end(), players[i]), playerList.end());
+					continue;
+				}
 			}
 			
 			scoreMap[players[i]] = 0;
@@ -224,56 +215,47 @@ void GhostGameHandler::runGame(std::string wordsFilePath, std::vector<GhostPlaye
 			currPlayerIndex = (currPlayerIndex + 1) % playerList.size();
 			GhostPlayer* currPlayer = playerList[currPlayerIndex];
 			
-			// use a thread with a timeout to get each player's move
-			pthread_t moveThread;
-			pthread_mutex_init(&mutex, NULL);
-			ThreadArg moveThreadArg = ThreadArg();
-			moveThreadArg.player = currPlayer;
-			moveThreadArg.argString = &currWord;
+			// use a fork with a timeout to get each player's move
 			printf("Getting next letter from player %s for string \"%s\"\n", currPlayer->getName().c_str(), currWord.c_str());
-			pthread_attr_t attr;
-			pthread_attr_init(&attr);
-			pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-			int retVal = pthread_create(&moveThread, &attr, getNextLetterTask, (void*)&moveThreadArg);
-			if(retVal)
+			int pipes[2];
+			pipe(pipes);
+			pid_t pid = fork();
+			if(pid == 0) // child
 			{
-				printf("Move failed for player %s, adding strike and starting new round\n", currPlayer->getName().c_str());
-				addStrike(currPlayer);
-				pthread_cancel(moveThread);
-				pthread_mutex_destroy(&mutex);
-				int removedIndex = removeLosers();
-				if(removedIndex <= currPlayerIndex) currPlayerIndex--;
-				currWord = "";
-				continue;
+				close(pipes[0]);
+				getNextLetterTask(currPlayer, currWord, pipes[1]);
 			}
-			usleep(1); // yield to new thread so it can start
-			
-			// monitor thread to see if it finishes, cancel if not
-			bool failure = babysitThread(moveThread, turnTimeoutSec);
-			
-			pthread_attr_destroy(&attr);
-			pthread_mutex_destroy(&mutex);
-			
-			if(failure)
+			else if(pid == -1)
 			{
-				printf("Move failed for player %s, adding strike and starting new round\n", currPlayer->getName().c_str());
-				addStrike(currPlayer);
-				pthread_cancel(moveThread);
-				int removedIndex = removeLosers();
-				if(removedIndex <= currPlayerIndex) currPlayerIndex--;
-				currWord = "";
-				continue;
+				fprintf(stderr, "Failed to create move process for player %s; ending game\n", currPlayer->getName().c_str());
+				return;
+			}
+			else
+			{
+				// monitor child to see if it finishes, cancel if not
+				close(pipes[1]);
+				bool failure = babysitProcess(pid, turnTimeoutSec);
+				if(failure)
+				{
+					printf("Move failed for player %s; adding strike and starting new round\n", currPlayer->getName().c_str());
+					addStrike(currPlayer);
+					int removedIndex = removeLosers();
+					if(removedIndex <= currPlayerIndex) currPlayerIndex--;
+					currWord = "";
+					continue;
+				}
 			}
 			
-			char letter = currWord[currWord.size() - 1];
+			char letter;
+			read(pipes[0], &letter, 1);
+			close(pipes[0]);
 			if('a' <= letter && letter <= 'z')
 			{
-				// no-op
+				currWord += letter;
 			}
 			else if(letter == CHALLENGE_CHAR)
 			{
-				std::string prevWord = currWord.substr(0, currWord.size() - 1);
-				MyTrie* node = wordTrie.getDeepChild(prevWord);
+				MyTrie* node = wordTrie.getDeepChild(currWord);
 				int prevPlayerIndex = (currPlayerIndex == 0) ? playerList.size() - 1 : (currPlayerIndex - 1) % playerList.size();
 				GhostPlayer* prevPlayer = playerList[prevPlayerIndex];
 				if(node == NULL || node->isTerminal() || !node->hasChildren())
@@ -281,7 +263,7 @@ void GhostGameHandler::runGame(std::string wordsFilePath, std::vector<GhostPlaye
 					printf("Player %s successfully challenged player %s over \"%s\"; adding strike to player %s and starting new round\n",
 						   currPlayer->getName().c_str(),
 						   prevPlayer->getName().c_str(),
-						   prevWord.c_str(),
+						   currWord.c_str(),
 						   prevPlayer->getName().c_str());
 					addStrike(prevPlayer);
 				}
@@ -290,7 +272,7 @@ void GhostGameHandler::runGame(std::string wordsFilePath, std::vector<GhostPlaye
 					printf("Player %s unsuccessfully challenged player %s over \"%s\"; adding strike to player %s and starting new round\n",
 						   currPlayer->getName().c_str(),
 						   prevPlayer->getName().c_str(),
-						   prevWord.c_str(),
+						   currWord.c_str(),
 						   currPlayer->getName().c_str());
 					addStrike(currPlayer);
 				}

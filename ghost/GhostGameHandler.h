@@ -6,6 +6,7 @@
 #include <vector>
 #include <utility>
 #include <map>
+#include <sys/types.h>
 
 #include "MyTrie.h"
 
@@ -27,12 +28,12 @@ private:
 	GhostGameHandler();
 	
 	void readWords(std::string filePath);
-	bool babysitThread(pthread_t thread, int timeout);
+	bool babysitProcess(pid_t pid, int timeout);
 	int removeLosers();
 	void addStrike(GhostPlayer* player);
 	
-	static void* readWordsTask(void* args);
-	static void* getNextLetterTask(void* args);
+	void readWordsTask(GhostPlayer* player, std::string filePath);
+	void getNextLetterTask(GhostPlayer* player, std::string currWord, int pipeFd);
 	
 public:
 	void runGame(std::string wordsFilePath, std::vector<GhostPlayer*> players, int turnTimeoutSec = 60);

@@ -11,14 +11,26 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include <sys/stat.h>
 
 #include "GhostGameHandler.h"
 #include "GhostPlayer.h"
 #include "MyTrie.h"
 
-#define READ_WORDS_TIMEOUT_SEC 5
+#define READ_WORDS_TIMEOUT_SEC 60
 
 GhostGameHandler* GhostGameHandler::instance = NULL;
+
+time_t getModifiedTime(std::string filePath)
+{
+	struct stat s;
+	if(stat(filePath.c_str(), &s) == -1)
+	{
+		fprintf(stderr, "Stat on file %s failed; exiting\n", filePath.c_str());
+		exit(EXIT_FAILURE);
+	}
+	return s.st_mtime;
+}
 
 GhostGameHandler::GhostGameHandler()
 {
@@ -29,6 +41,7 @@ GhostGameHandler::GhostGameHandler()
 void GhostGameHandler::readWords(std::string filePath)
 {
 	std::ifstream file;
+	wordsFileModifiedTime = getModifiedTime(filePath);
 	file.open(filePath.c_str());
 	char word[32];
 	int wordCount = 0;
@@ -201,6 +214,15 @@ void GhostGameHandler::runGame(std::string wordsFilePath, std::vector<GhostPlaye
 					playerList.erase(std::remove(playerList.begin(), playerList.end(), players[i]), playerList.end());
 					continue;
 				}
+			}
+			
+			if(getModifiedTime(wordsFilePath) != wordsFileModifiedTime)
+			{
+				fprintf(stderr,
+						"Words file at %s has been modified (tampered with by player %s?); exiting\n",
+						wordsFilePath.c_str(),
+						players[i]->getName().c_str());
+				exit(EXIT_FAILURE);
 			}
 			
 			scoreMap[players[i]] = 0;

@@ -20,6 +20,7 @@ class GhostGameHandler
 private:
 	MyTrie wordTrie;
 	bool inProgress;
+	time_t wordsFileModifiedTime;
 	std::map<GhostPlayer*, int> scoreMap;
 	std::vector<GhostPlayer*> playerList;
 	

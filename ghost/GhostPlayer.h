@@ -1,4 +1,4 @@
-// Virtual class for you to use in implementing your own Ghost player
+// Pure virtual class (interface) for you to use in implementing your own Ghost player
 #ifndef GHOSTPLAYER_H
 #define GHOSTPLAYER_H
 

@@ -17,9 +17,23 @@
 #include "GhostPlayer.h"
 #include "MyTrie.h"
 
-#define READ_WORDS_TIMEOUT_SEC 60
+// game state variables (not part of the class to keep them out of the header)
+MyTrie wordTrie;
+bool inProgress;
+time_t wordsFileModifiedTime;
+std::map<GhostPlayer*, int> scoreMap;
+std::vector<GhostPlayer*> playerList;
 
 GhostGameHandler* GhostGameHandler::instance = NULL;
+
+// helper functions
+time_t getModifiedTime(std::string filePath);
+void readWords(std::string filePath);
+bool babysitProcess(pid_t pid, int timeout);
+int removeLosers();
+void addStrike(GhostPlayer* player);
+void readWordsTask(GhostPlayer* player, std::string filePath);
+void getNextLetterTask(GhostPlayer* player, std::string currWord, int pipeFd);
 
 time_t getModifiedTime(std::string filePath)
 {
@@ -32,13 +46,7 @@ time_t getModifiedTime(std::string filePath)
 	return s.st_mtime;
 }
 
-GhostGameHandler::GhostGameHandler()
-{
-	wordTrie = MyTrie();
-	scoreMap = std::map<GhostPlayer*, int>();
-}
-
-void GhostGameHandler::readWords(std::string filePath)
+void readWords(std::string filePath)
 {
 	std::ifstream file;
 	wordsFileModifiedTime = getModifiedTime(filePath);
@@ -67,7 +75,7 @@ void GhostGameHandler::readWords(std::string filePath)
 	printf("Successfully read %d words\n", wordCount);
 }
 
-bool GhostGameHandler::babysitProcess(pid_t pid, int timeout)
+bool babysitProcess(pid_t pid, int timeout)
 {
 	int status;
 	pid_t retVal;
@@ -103,7 +111,7 @@ bool GhostGameHandler::babysitProcess(pid_t pid, int timeout)
 	return failure;
 }
 
-int GhostGameHandler::removeLosers()
+int removeLosers()
 {
 	for(int i = 0; i < playerList.size(); i++)
 	{
@@ -118,14 +126,14 @@ int GhostGameHandler::removeLosers()
 	return playerList.size();
 }
 
-void GhostGameHandler::addStrike(GhostPlayer* player)
+void addStrike(GhostPlayer* player)
 {
 	static const std::string GHOST = "GHOST";
 	scoreMap[player] += 1;
 	printf("Player %s now has %s\n", player->getName().c_str(), GHOST.substr(0, scoreMap[player]).c_str());
 }
 
-void GhostGameHandler::readWordsTask(GhostPlayer* player, std::string filePath)
+void readWordsTask(GhostPlayer* player, std::string filePath)
 {
 	try
 	{
@@ -140,7 +148,7 @@ void GhostGameHandler::readWordsTask(GhostPlayer* player, std::string filePath)
 	}
 }
 
-void GhostGameHandler::getNextLetterTask(GhostPlayer* player, std::string currWord, int pipeFd)
+void getNextLetterTask(GhostPlayer* player, std::string currWord, int pipeFd)
 {
 	try
 	{
@@ -170,6 +178,13 @@ void GhostGameHandler::getNextLetterTask(GhostPlayer* player, std::string currWo
 		fprintf(stderr, "Player %s threw an exception while choosing a move\n", player->getName().c_str());
 		exit(EXIT_FAILURE);
 	}
+}
+
+// GhostGameHandler definition
+GhostGameHandler::GhostGameHandler()
+{
+	wordTrie = MyTrie();
+	scoreMap = std::map<GhostPlayer*, int>();
 }
 
 GhostGameHandler* GhostGameHandler::getInstance()

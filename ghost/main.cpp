@@ -1,4 +1,3 @@
-#include "MyTrie.h"
 #include "GhostGameHandler.h"
 #include "HumanGhostPlayer.h"
 #include <iostream>

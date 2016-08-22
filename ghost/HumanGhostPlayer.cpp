@@ -1,7 +1,5 @@
 #include <iostream>
 #include <string>
-#include <exception>
-#include <unistd.h>
 
 #include "HumanGhostPlayer.h"
 

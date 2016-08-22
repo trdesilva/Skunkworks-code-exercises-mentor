@@ -12,7 +12,7 @@ Coding and design practice with classes and pointers. Students will learn about 
 Difficulty: Low
 
 #ghost
-A competitive introduction to AI. Students will learn about file I/O and designing data structures for performance while creating bots to play a word game.
+A competitive introduction to AI and polymorphism. Students will learn about file I/O, designing data structures for performance, and interfaces while creating bots to play a word game.
 
 Difficulty: Medium
 

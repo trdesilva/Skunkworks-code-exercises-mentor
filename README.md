@@ -9,3 +9,6 @@ Coding practice with arrays, loops, conditionals, and strings. Students will wor
 
 #linkedList
 Coding and design practice with classes and pointers. Students will learn about dealing with references and designing object-oriented code as they solve a canonical programming problem. This exercise also serves as an introduction to dynamic data structures.
+
+#ghost
+A competitive introduction to AI. Students will learn about file I/O and designing data structures for performance while creating bots to play a word game.

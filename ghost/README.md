@@ -8,13 +8,13 @@ GHOST is a simple, competitive multiplayer word game in which players take turns
 
 When a player gains 5 strikes, they are eliminated; the last player to be eliminated wins. Players may also forfeit on their turn, which causes them to automatically gain a strike.
 
-Your task is to write a program that plays GHOST. You must implement the interface in GhostPlayer.h. In readWords(), your implementation should read the authoritative word list into memory, and getNextLetter() should return a valid move for the given string. Your implementation must always challenge invalid strings, and must always forfeit if there is no valid move. You can find #defines for these values in GhostGameHandler.h.
+Your task is to write a program that plays GHOST. You must implement the interface in GhostPlayer.h. In `readWords()`, your implementation should read the authoritative word list into memory, and `getNextLetter()` should return a valid move for the given string. Your implementation must always challenge invalid strings, and must always forfeit if there is no valid move. You can find `#define`s for these values in GhostGameHandler.h.
 
-To build and run your code, add a task to the supplied makefile for your class, and add your class to the existing main task. To start a game, call GhostGameHandler::runGame() with the following arguments:
+To build and run your code, add a task to the supplied makefile for your class, and add your class to the existing main task. To start a game, call `GhostGameHandler::runGame()` with the following arguments:
 
 1. A path to a file containing a newline-separated list of words
-2. A vector containing pointers to GhostPlayers that will participate
-3. (Optional) A timeout that GhostGameHandler will enforce for each call to getNextLetter(), in seconds
+2. A `vector` containing pointers to `GhostPlayer`s that will participate
+3. (Optional) A timeout that `GhostGameHandler` will enforce for each call to `getNextLetter()`, in seconds
 
 # Background
 For this project, you'll need to know or learn about these topics:
@@ -23,13 +23,13 @@ For this project, you'll need to know or learn about these topics:
  * search algorithms and data structures
 
 # Tips
- * The GhostGameHandler can be queried about the current state of the game, which you may find helpful in coming up with the optimal move.
+ * The `GhostGameHandler` can be queried about the current state of the game, which you may find helpful in coming up with the optimal move.
  * Your code's performance is important. If it takes more than a minute to read in the word list, your player will be dropped from the game, and if it crashes or times out while making a move, your player will gain a strike.
  * This project can be viewed as a [constraint satisfaction problem](https://en.wikipedia.org/wiki/Constraint_satisfaction_problem).
- * The included HumanGhostPlayer takes moves from stdin, so you can play against your implementation for troubleshooting (or fun).
+ * The included `HumanGhostPlayer` takes moves from `stdin`, so you can play against your implementation for troubleshooting (or fun).
 
 # Extensions
 When your GhostPlayer works, try the following:
 
-1. Improve on your strategy. Try to make your GhostPlayer always choose the optimal move for the situation.
-2. Improve on performance. Use different algorithms and data structures to see if you can get your GhostPlayer to make moves faster.
+1. Improve on your strategy. Try to make your `GhostPlayer` always choose the optimal move for the situation.
+2. Improve on performance. Use different algorithms and data structures to see if you can get your `GhostPlayer` to make moves faster.

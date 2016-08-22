@@ -24,7 +24,8 @@ For this project, you'll need to know or learn about these topics:
 
 # Tips
  * The `GhostGameHandler` can be queried about the current state of the game, which you may find helpful in coming up with the optimal move.
- * Your code's performance is important. If it takes more than a minute to read in the word list, your player will be dropped from the game, and if it crashes or times out while making a move, your player will gain a strike.
+ * The included word lists (words.txt and smallwords.txt) only use words with lower case alphabetic characters.
+ * Your code's performance is important. If it takes more than 10 seconds to read in the word list, your player will be dropped from the game, and if it crashes or times out while making a move, your player will gain a strike.
  * This project can be viewed as a [constraint satisfaction problem](https://en.wikipedia.org/wiki/Constraint_satisfaction_problem).
  * The included `HumanGhostPlayer` takes moves from `stdin`, so you can play against your implementation for troubleshooting (or fun).
 

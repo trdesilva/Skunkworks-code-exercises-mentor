@@ -8,7 +8,7 @@
 
 #define CHALLENGE_CHAR '?'
 #define FORFEIT_CHAR '#'
-#define READ_WORDS_TIMEOUT_SEC 60
+#define READ_WORDS_TIMEOUT_SEC 10
 
 class GhostPlayer;
 

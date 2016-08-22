@@ -2,13 +2,13 @@
 GHOST is a simple, competitive multiplayer word game in which players take turns adding characters to a string. Gameplay proceeds as follows:
 
 1. Start with an empty string.
-2. A player adds a letter to the string. With each letter added, the string both must be a prefix of at least one complete word, but must not be a complete word itself.
+2. A player adds a letter to the string. With each letter added, the string both must be a prefix of at least one complete word, and must not be a complete word itself. (For example, "th" is a valid string because "the" starts with "th", but "the" is not a valid string because "the" is a word.)
 3. Play proceeds to the next player, who adds their own letter to the string as in step 2. If the next player thinks that the current string breaks the rules, they may challenge it. If the string does break the rules, the challenge is successful, and the previous player gains a strike. If the string does not break the rules, the challenge is unsuccessful, and the challenger gains a strike instead.
 4. Repeat step 3 until a player gains a strike (represented by the letters of the word "GHOST"). When a player gains a strike, go to step 1.
 
 When a player gains 5 strikes, they are eliminated; the last player to be eliminated wins. Players may also forfeit on their turn, which causes them to automatically gain a strike.
 
-Your task is to write a program that plays GHOST. You must implement the interface in GhostPlayer.h. In `readWords()`, your implementation should read the authoritative word list into memory, and `getNextLetter()` should return a valid move for the given string. Your implementation must always challenge invalid strings, and must always forfeit if there is no valid move. You can find `#define`s for these values in GhostGameHandler.h.
+Your task is to write a program that plays GHOST. You must implement the interface in GhostPlayer.h. In `readWords()`, your implementation should read the authoritative word list into memory, and `getNextLetter()` should return a valid move for the given string. Your implementation must always challenge invalid strings, and must always forfeit if there is no valid move. You can find `#define`s for these return values in GhostGameHandler.h.
 
 To build and run your code, add a task to the supplied makefile for your class, and add your class to the existing main task. To start a game, call `GhostGameHandler::runGame()` with the following arguments:
 

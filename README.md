@@ -11,6 +11,11 @@ Coding and design practice with classes and pointers. Students will learn about 
 
 Difficulty: Low
 
+#ghost
+A competitive introduction to AI. Students will learn about file I/O and designing data structures for performance while creating bots to play a word game.
+
+Difficulty: Medium
+
 #PIDDebug
 Debugging practice using simulated PID controllers, encoders, and motors. Students will solve a variety of common compile errors, runtime crashes and logic mistakes while fixing the supplied broken program. Students will be taught about basic debugger features to help with this project. The fully-working program is a useful tool for learning about and examining the functionality of PID controllers.
 

@@ -1,0 +1,57 @@
+#######################################
+# Syntax Coloring Map for AFMotor
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+Adafruit_MotorShield	KEYWORD1
+Adafruit_DCMotor	KEYWORD1
+Adafruit_StepperMotor	KEYWORD1
+Scheduler	KEYWORD1
+Command	KEYWORD1
+Robot	KEYWORD1
+MotorController	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+enable	KEYWORD2
+run	KEYWORD2
+setSpeed	KEYWORD2
+step	KEYWORD2
+onestep	KEYWORD2
+release	KEYWORD2
+getMotor	KEYWORD2
+getStepper	KEYWORD2
+setPin		KEYWORD2
+setPWM		KEYWORD2
+getInstance	KEYWORD2
+addCommand	KEYWORD2
+processCommands	KEYWORD2
+initialize	KEYWORD2
+execute	KEYWORD2
+isFinished	KEYWORD2
+end	KEYWORD2
+log	KEYWORD2
+getShield	KEYWORD2
+autonomousInit	KEYWORD2
+autonomousPeriodic	KEYWORD2
+setOutput	KEYWORD2
+setBrakeMode	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+MICROSTEPPING	LITERAL1
+FORWARD	LITERAL1
+BACKWARD	LITERAL1
+BRAKE	LITERAL1
+RELEASE	LITERAL1
+SINGLE	LITERAL1
+DOUBLE	LITERAL1
+INTERLEAVE	LITERAL1
+MICROSTEP	LITERAL1

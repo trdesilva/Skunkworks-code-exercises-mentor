@@ -2,7 +2,11 @@
 
 bool Command::run()
 {
-	if(!initialized) initialize();
+	if(!initialized) 
+	{
+		initialize();
+		initialized = true;
+	}
 	
 	bool finished = isFinished();
 	if(!finished)

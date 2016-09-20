@@ -2,6 +2,7 @@
 #include "Scheduler.h"
 #include "adafruit/Adafruit_MotorShield.h"
 #include <Wire.h>
+#include "ExampleCommand.h"
 
 #include <string>
 
@@ -31,6 +32,7 @@ Adafruit_MotorShield* Robot::getShield()
 void Robot::autonomousInit()
 {
 	// TODO your code here
+	Scheduler::getInstance()->addCommand(new ExampleCommand(4, 3));
 }
 
 void Robot::autonomousPeriodic()

@@ -10,7 +10,8 @@ MotorController::MotorController(int port, bool brakeMode)
 
 void MotorController::setOutput(float output)
 {
-	uint8_t speed = output*256;
+	output = max(min(1, output), -1);
+	uint8_t speed = abs(output)*255;
 	uint8_t dir;
 	if(speed == 0)
 	{

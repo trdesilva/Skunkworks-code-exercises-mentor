@@ -1,0 +1,36 @@
+# WPILib For Arduino
+
+This project contains a minimal port of WPILib compatible with the Arduino Uno and Adafruit Motor Shield v2.3. You can use this to practice writing FRC robot code on your Arduino kitbot. The following classes are included:
+
+ * Robot: The main class in a WPILib project.
+ * Command: An abstract class that can be extended to implement different tasks that the robot can perform.
+ * Scheduler: Handles the execution of Commands.
+ * MotorController: Sends outputs to the motors.
+
+An Arduino sketch is also included. To run:
+
+1. Download the [Arduino IDE](https://www.arduino.cc/en/Main/Software).
+2. Download [this Arduino port of the C++ standard library](https://github.com/maniacbug/StandardCplusplus) and follow the installation instructions.
+3. Edit the LIB_DIR variable in the makefile and set it to the location of your Arduino library directory (the same directory you just put the C++ standard library port in).
+4. Run the command "make project" (after the first time, just run "make") in a Cygwin terminal. This will import your code into the Arduino IDE as a library.
+5. Open the included sketch file, testSketch.ino, in the Arduino IDE and click the "Upload" button. The code will execute on your Arduino as soon as the upload finishes.
+
+# Background
+
+To write WPILib For Arduino code, you'll need to know or learn about the following:
+
+ * loops
+ * pointers
+ * classes
+ * WPILib command-based program architecture
+
+If you need help with any of these, ask a mentor or the internet.
+
+# Tips
+
+ * Any code that you write should go in commands that extend the Command base class, or in Robot::autonomousInit(). The other classes are available for viewing so you can see how they work, but you shouldn't need to edit any of them.
+ * For an example of how these classes fit together in a real robot program, take a look at [one of our old repositories](https://github.com/Skunkworks1983/2016Stronghold).
+
+# Extensions
+
+N/A

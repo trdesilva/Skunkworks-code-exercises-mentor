@@ -5,7 +5,7 @@ public:
     LinkedList();
     
     // Create a linked list that contains the data in the provided array
-    LinkedList(int initialData[]);
+    LinkedList(int initialData[], unsigned int length);
     
     // Add a node to the start of the list
     void push(int newValue);

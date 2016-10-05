@@ -6,7 +6,7 @@ all: clean project
 clean:
 	rm -r $(LIB_DIR)/$(LIB_NAME)
 
-project: Command.h ExampleCommand.h library.properties MotorController.h Robot.h Scheduler.h Command.cpp ExampleCommand.cpp keywords.txt MotorController.cpp Robot.cpp Scheduler.cpp
+project: Command.h CommandGroup.h ExampleCommand.h MotorController.h Robot.h Scheduler.h Command.cpp CommandGroup.cpp ExampleCommand.cpp keywords.txt MotorController.cpp Robot.cpp Scheduler.cpp library.properties
 	mkdir $(LIB_DIR)/$(LIB_NAME)
-	cp Command.h ExampleCommand.h library.properties MotorController.h Robot.h Scheduler.h Command.cpp ExampleCommand.cpp keywords.txt MotorController.cpp Robot.cpp Scheduler.cpp $(LIB_DIR)/$(LIB_NAME)
+	cp Command.h CommandGroup.h ExampleCommand.h MotorController.h Robot.h Scheduler.h Command.cpp CommandGroup.cpp ExampleCommand.cpp keywords.txt MotorController.cpp Robot.cpp Scheduler.cpp library.properties $(LIB_DIR)/$(LIB_NAME)
 	cp -r adafruit $(LIB_DIR)/$(LIB_NAME)

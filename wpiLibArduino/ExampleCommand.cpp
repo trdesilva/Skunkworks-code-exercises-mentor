@@ -14,8 +14,6 @@ void ExampleCommand::initialize()
 }
 void ExampleCommand::execute()
 {
-	static bool increasing = true;
-	static float speed = 0;
 	motorL.setOutput(speed);
 	motorR.setOutput(speed);
 	speed += .001 * (increasing ? 1 : -1);
@@ -34,8 +32,7 @@ void ExampleCommand::execute()
 }
 bool ExampleCommand::isFinished()
 {
-	static uint16_t counter = 0;
-	return counter++ > 10000;
+	return counter++ > 2000;
 }
 void ExampleCommand::end()
 {

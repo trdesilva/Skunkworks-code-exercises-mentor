@@ -10,6 +10,10 @@ private:
 	MotorController motorL;
 	MotorController motorR;
 	
+	bool increasing = true;
+	float speed = 0;
+	unsigned int counter = 0;
+	
 public:
 	ExampleCommand(int portL, int portR);
 	

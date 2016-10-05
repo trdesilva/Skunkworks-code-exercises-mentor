@@ -8,7 +8,7 @@ LinkedList::LinkedList()
 }
 
 // Create a linked list that contains the data in the provided array
-LinkedList::LinkedList(int initialData[])
+LinkedList::LinkedList(int initialData[], unsigned int length)
 {
 
 }

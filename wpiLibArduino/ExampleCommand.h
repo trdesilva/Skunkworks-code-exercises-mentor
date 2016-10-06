@@ -3,12 +3,16 @@
 
 #include "Command.h"
 #include "MotorController.h"
+#include "AnalogInput.h"
+#include "PidController.h"
 
 class ExampleCommand: public Command
 {
 private:
 	MotorController motorL;
 	MotorController motorR;
+	AnalogInput analogInput;
+	PidController pidController;
 	
 	bool increasing = true;
 	float speed = 0;

@@ -35,7 +35,6 @@ void Robot::autonomousInit()
 	// TODO your code here
 	CommandGroup* commandGroup = new CommandGroup();
 	commandGroup->addParallel(new ExampleCommand(4,3));
-	commandGroup->addParallel(new ExampleCommand(4,3));
 	Scheduler::getInstance()->addCommand(commandGroup);
 }
 

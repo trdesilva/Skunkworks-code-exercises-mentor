@@ -2,7 +2,9 @@
 #include "Robot.h"
 #include "adafruit/Adafruit_MotorShield.h"
 
-MotorController::MotorController(int port, bool brakeMode)
+#include <stdint.h>
+
+MotorController::MotorController(uint8_t port, bool brakeMode)
 {
 	this->port = port;
 	this->brakeMode = brakeMode;

@@ -4,8 +4,13 @@ This project contains a minimal port of WPILib compatible with the Arduino Uno a
 
  * Robot: The main class in a WPILib project.
  * Command: An abstract class that can be extended to implement different tasks that the robot can perform.
+ * CommandGroup: A structured list of Commands.
  * Scheduler: Handles the execution of Commands.
  * MotorController: Sends outputs to the motors.
+ * AnalogInput: Reads voltages from the "Analog In" pins. Allows use of the included IR rangefinder.
+ * PidController: An implementation of a [PID controller](https://en.wikipedia.org/wiki/PID_controller).
+ * PidOutput: An interface for output devices compatible with the PidController. Implemented by MotorController.
+ * PidInput: An interface for input devices compatible with the PidController. Implemented by AnalogInput.
 
 An Arduino sketch is also included. To run:
 

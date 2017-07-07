@@ -2,30 +2,30 @@
 Your task is to create a program that functions as an inventory for parts of a robot. The program would have a list of parts for a robot, and users would be able to ask the program whether or not a certain part is in the list. For example, if the robot had a RoboRIO, a Talon, a CIM, and a wheel, a run of the program might look like this (user input has a '$' in front of it):
 
     Name a part:
-    $CIM
+    $ CIM
     The robot has one.
     Name a part:
-    $Talon
+    $ Talon
     The robot has one.
     Name a part:
-    $heart
+    $ heart
     The robot does not have one.
     Name a part:
-    $:(
+    $ :(
 
-... and so on. To compile and run your code, either import this directory into Eclipse as a makefile project, or run the command "make" in a command shell and run the "robotInventory" executable produced.
+... and so on. To compile and run your C++ code, either import this directory into Eclipse as a makefile project, or run the command "make" in a command shell and run the "robotInventory" executable produced. For Java, click the "Run" button in IntelliJ.
 
 # Background
 To do this, you'll need to know or learn about:
 
- * cin/cout
+ * user input/output (`cin/cout` for C++; `Scanner/System.out.println()` for Java)
  * variables
- * std::string
+ * strings (`std::string` for C++; `String` for Java)
  * arrays
  * for/while loops
  * if statements. 
 
-If you need help, ask a mentor or the internet. For reading on the above topics, try [cplusplus.com](http://www.cplusplus.com).
+If you need help, ask a mentor or the internet. For reading on the above topics, try [cplusplus.com](http://www.cplusplus.com) or [the Java tutorials](https://docs.oracle.com/javase/tutorial/).
 
 # Tips
 The structure of the program should roughly be as follows:

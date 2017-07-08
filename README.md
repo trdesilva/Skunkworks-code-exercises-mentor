@@ -16,8 +16,9 @@ A competitive introduction to AI. Students will learn about file I/O and designi
 ----
 
 For Java with IntelliJ, setup for all of the contained exercises is simple and uniform:
-1. Import the repo as a project in IntelliJ (File > New > Project from Version Control > GitHub, then select this repo from the dropdown).
+1. Import the repo as a project in IntelliJ (File > New > Project from Version Control > GitHub, then select this repo from the dropdown). When IntelliJ asks if you want to create a new project from the repo, choose "Yes".
 2. Use the default options in the prompts that appear. Each exercise should appear as a separate module in your new project. Starter code for each exercise (where applicable) can be found in the "java" directory of each module.
 3. Make sure that the project's compiler output location is set (File > Project Structure > Project compiler output, then choose a location for compiled .class and .jar files to be saved).
+4. Add JUnit as a library to the project. Go to File > Project Structure > Libraries, click the "Add" button, select "From Maven", and enter "junit:junit:4.12" in the search box. After it finds the library, click "OK" and select all of the modules in the next window. After you do this, you should be able to run unit tests for any of the exercises.
 
 For C++, Windows with MinGW is supported. (TODO: write instructions for C++ IDE setup)

@@ -1,3 +1,6 @@
+package test;
+
+import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Test;
 import src.Constants;
@@ -37,7 +40,7 @@ public class BVT_PidController
         pidController.setMode(PidController.Mode.POSITION_REV);
     
         pidController.enable();
-        while(onTargetLoops < 10)
+        while(onTargetLoops < 10 && loops < 1000)
         {
             pidController.update();
         
@@ -75,7 +78,7 @@ public class BVT_PidController
         pidController.setMode(PidController.Mode.POSITION_RAW);
     
         pidController.enable();
-        while(onTargetLoops < 10)
+        while(onTargetLoops < 10 && loops < 1000)
         {
             pidController.update();
         
@@ -113,7 +116,7 @@ public class BVT_PidController
         pidController.setMode(PidController.Mode.SPEED);
     
         pidController.enable();
-        while(onTargetLoops < 10)
+        while(onTargetLoops < 10 && loops < 1000)
         {
             pidController.update();
         
@@ -144,7 +147,7 @@ public class BVT_PidController
         // Check that PID doesn't run when disabled
         System.out.println("Verifying that PID can't run while disabled");
         pidController.update();
-        assertThat(motor.getOutput(), is(0.));
+        MatcherAssert.assertThat(motor.getOutput(), is(0.));
     
         // Check that mode can't be changed when PID is enabled
         System.out.println("Verifying that control mode can't be changed while PID is running");

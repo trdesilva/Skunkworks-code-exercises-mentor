@@ -1,3 +1,6 @@
+package test;
+
+import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Test;
 import src.Constants;
@@ -64,7 +67,7 @@ public class UT_Encoder
             encoder.update();
         }
         System.out.printf("]\nExpecting speed %f\n", actualSpeed);
-        assertThat(encoder.getSpeed(), is(actualSpeed));
+        MatcherAssert.assertThat(encoder.getSpeed(), is(actualSpeed));
     }
     
     @Test
@@ -76,7 +79,7 @@ public class UT_Encoder
         encoder.update();
         System.out.printf("Set output to %f, expecting position %f\n", outputs.get(0), actualPos);
     
-        assertThat(encoder.getPosition(), is(actualPos));
+        MatcherAssert.assertThat(encoder.getPosition(), is(actualPos));
     
         actualTicks += Constants.COUNTS_PER_REV*(2*(1./(Constants.LOOPS_ACCELERATION + 1))*speeds.get(Constants.LOOPS_ACCELERATION - 2) + (1./(Constants.LOOPS_ACCELERATION + 1))*speeds.get(Constants.LOOPS_ACCELERATION - 1))/ Constants.LOOPS_PER_SEC;
         actualPos = (double)actualTicks/ Constants.COUNTS_PER_REV;
@@ -84,7 +87,7 @@ public class UT_Encoder
         encoder.update();
         System.out.printf("Set output to %f, expecting position %f\n", outputs.get(1), actualPos);
     
-        assertThat(encoder.getPosition(), is(actualPos));
+        MatcherAssert.assertThat(encoder.getPosition(), is(actualPos));
     }
     
     @Test
@@ -95,14 +98,14 @@ public class UT_Encoder
         encoder.update();
         System.out.printf("Set output to %f, expecting count %d\n", outputs.get(0), actualTicks);
     
-        assertThat(encoder.getRaw(), is(actualTicks));
+        MatcherAssert.assertThat(encoder.getRaw(), is(actualTicks));
     
         actualTicks += Constants.COUNTS_PER_REV*(2*(1./(Constants.LOOPS_ACCELERATION + 1))*speeds.get(Constants.LOOPS_ACCELERATION - 2) + (1./(Constants.LOOPS_ACCELERATION + 1))*speeds.get(Constants.LOOPS_ACCELERATION - 1))/ Constants.LOOPS_PER_SEC;
         motor.set(outputs.get(1));
         encoder.update();
         System.out.printf("Set output to %f, expecting position %d\n", outputs.get(1), actualTicks);
     
-        assertThat(encoder.getRaw(), is(actualTicks));
+        MatcherAssert.assertThat(encoder.getRaw(), is(actualTicks));
     }
     
     @Test
@@ -137,7 +140,7 @@ public class UT_Encoder
         
         double speed = 2*(1./(Constants.LOOPS_ACCELERATION + 1))*getInstSpeed(new Random(0), 1);
         System.out.printf("Output set to 1, expect speed %f\n", speed);
-        assertThat(encoder.getSpeed(), is(speed));
+        MatcherAssert.assertThat(encoder.getSpeed(), is(speed));
     }
     
     double getInstSpeed(Random random, double output)

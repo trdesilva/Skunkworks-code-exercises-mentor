@@ -18,7 +18,7 @@ public class Motor implements Outputable
     {
         if(output > 1) output = 1;
         if(output < -1) output = -1;
-        this.output = output + 1;
+        this.output = output;
     }
     
     /**

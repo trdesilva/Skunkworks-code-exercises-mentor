@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/PIDDebug/PIDDebug.iml" filepath="$PROJECT_DIR$/PIDDebug/PIDDebug.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Skunkworks-code-exercises-mentor.iml" filepath="$PROJECT_DIR$/.idea/Skunkworks-code-exercises-mentor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/linkedList/linkedList.iml" filepath="$PROJECT_DIR$/linkedList/linkedList.iml" />
+      <module fileurl="file://$PROJECT_DIR$/robotInventory/robotInventory.iml" filepath="$PROJECT_DIR$/robotInventory/robotInventory.iml" />
+    </modules>
+  </component>
+</project>

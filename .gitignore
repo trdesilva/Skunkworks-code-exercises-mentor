@@ -2,4 +2,6 @@
 **/*.o
 **/*.so
 **/*.dll
+**/*.iml
+.idea
 out

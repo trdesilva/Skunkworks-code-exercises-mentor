@@ -1,6 +1,6 @@
 package src;
 
-public class Motor implements Outputable
+public class Motor
 {
     private int port;
     private double output;
@@ -16,9 +16,9 @@ public class Motor implements Outputable
     @Override
     public void set(double output)
     {
-        if(output > 1) output = 1;
-        if(output < -1) output = -1;
         this.output = output;
+        if(output < 1) output = 1;
+        if(output > -1) output = -1;
     }
     
     /**

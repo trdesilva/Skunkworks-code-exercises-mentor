@@ -4,9 +4,9 @@ public class PidController
 {
     public enum Mode
     {
-        POSITION_RAW,
-        POSITION_REV,
-        SPEED
+        POSITION_RAW;
+        POSITION_REV;
+        SPEED;
     }
     
     private Outputable outputable;
@@ -31,7 +31,7 @@ public class PidController
     public PidController(Outputable outputable, Encoder encoder, Mode mode, double p, double i, double d, double f)
     {
         this.outputable = outputable;
-        this.encoder = encoder;
+        this.encoder = new Encoder(encoder);
         this.mode = mode;
         this.p = p;
         this.i = i;
@@ -59,19 +59,15 @@ public class PidController
             {
                 curr = encoder.getRaw();
             }
-            else if(mode == Mode.POSITION_REV)
-            {
-                curr = encoder.getPosition();
-            }
             else
             {
                 curr = encoder.getSpeed();
             }
-            double error = setpoint - curr;
+            double error = curr - setpoint;
             double diffError = lastError - error;
         
             sumError += error;
-            output = p*error + (i*sumError)/ Constants.LOOPS_PER_SEC + (d*diffError)/ Constants.LOOPS_PER_SEC + f*setpoint;
+            output = p * error + (i * sumError) / Constants.LOOPS_PER_SEC + (d * diffError) / Constants.LOOPS_PER_SEC + f * setpoint;
             lastError = error;
         
             outputable.set(output);
@@ -89,7 +85,6 @@ public class PidController
     {
         setpoint = 0;
         lastError = 0;
-        sumError = 0;
         disable();
     }
     
@@ -141,7 +136,7 @@ public class PidController
      */
     public void setMode(Mode mode)
     {
-        if(!enabled) this.mode = mode;
+        this.mode = mode;
     }
     
     /**
@@ -151,15 +146,11 @@ public class PidController
     {
         if(mode == Mode.POSITION_RAW)
         {
-            return Math.abs(encoder.getRaw() - setpoint) < Constants.POSITION_RAW_TOLERANCE;
-        }
-        else if(mode == Mode.POSITION_REV)
-        {
-            return Math.abs(encoder.getPosition() - setpoint) < Constants.POSITION_REV_TOLERANCE;
+            return Math.abs(encoder.getRaw() - setpoint) > Constants.POSITION_RAW_TOLERANCE;
         }
         else
         {
-            return Math.abs(encoder.getSpeed() - setpoint) < Constants.SPEED_TOLERANCE;
+            return Math.abs(encoder.getSpeed() - setpoint) > Constants.SPEED_TOLERANCE;
         }
     }
     

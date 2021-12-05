@@ -9,9 +9,10 @@ public class TestMain
 {
     public static void main(String[] args) throws Throwable
     {
-        if(runClass(UT_Motor.class) &&
-                runClass(UT_Encoder.class) &&
-                runClass(BVT_PidController.class))
+        boolean allPassed = runClass(UT_Motor.class);
+        allPassed &= runClass(UT_Encoder.class);
+        allPassed &= runClass(BVT_PidController.class);
+        if(allPassed)
         {
             System.out.println("All tests pass!");
         }
@@ -28,7 +29,7 @@ public class TestMain
         {
             System.out.println(failure.toString());
         }
-        System.out.println(classToRun.toString() + " passed: " + result.wasSuccessful());
+        System.out.println(classToRun.getSimpleName() + " passed: " + result.wasSuccessful());
         return result.wasSuccessful();
     }
 }

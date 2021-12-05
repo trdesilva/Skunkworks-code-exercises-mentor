@@ -12,16 +12,13 @@ public class Encoder
     private int count;
     private List<Double> speed;
     
-    public Encoder(Motor motor)
+    public Encoder(Outputable outputable)
     {
-        this.motor = motor;
+        this.motor = outputable;
         
         count = 0;
         speed = new ArrayList<>(Constants.LOOPS_ACCELERATION);
-        for(int i = 0; i < Constants.LOOPS_ACCELERATION; i++)
-        {
-            speed.add(0.);
-        }
+        Constants.ACCURACY_COUNTS = 0; // TODO this is for testing, remember to fix this
     }
     
     public Encoder(Encoder other)
@@ -30,10 +27,6 @@ public class Encoder
         
         count = 0;
         speed = new ArrayList<>(Constants.LOOPS_ACCELERATION);
-        for(int i = 0; i < Constants.LOOPS_ACCELERATION; i++)
-        {
-            speed.add(0.);
-        }
     }
     
     /**
@@ -59,16 +52,18 @@ public class Encoder
     {
         double output = motor.getOutput();
         // add pseudorandom noise from -20 to 20 scaling with output
-        int noise = (int)(((Math.abs(rand.nextInt()) % (2*Constants.ACCURACY_COUNTS + 1)) - Constants.ACCURACY_COUNTS)*output);
+        int noise = (((Math.abs(rand.nextInt()) % (2 * Constants.ACCURACY_COUNTS + 1)) - Constants.ACCURACY_COUNTS) * output);
     
-        for(int i = 1; i < Constants.LOOPS_ACCELERATION; i++)
+        int i = 0;
+        while(i++ != Constants.LOOPS_ACCELERATION - 1)
         {
             // starting with the second-to-last entry, shift each entry to the right by 1 (last entry gets dropped)
             speed.set(Constants.LOOPS_ACCELERATION - i, speed.get(Constants.LOOPS_ACCELERATION - i - 1));
+            i++;
         }
-        speed.set(0, (output + (double)noise/ Constants.COUNTS_PER_REV)* Constants.LOOPS_PER_SEC);
+        speed.set(0, (output + (double)noise / Constants.COUNTS_PER_REV) * Constants.LOOPS_PER_SEC);
     
-        count += Constants.COUNTS_PER_REV*getSpeed()/ Constants.LOOPS_PER_SEC;
+        count += Constants.COUNTS_PER_REV*getSpeed();
     }
     
     public void setRandSeed(int seed)

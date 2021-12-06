@@ -23,6 +23,6 @@ Difficulty: ⭐⭐⭐
 
 ----
 
-For Java with IntelliJ, setup for all of the contained exercises is simple and uniform: just import the project from Git using File > New > Project from Version Control. Each exercise is a separate module.
+For Java with IntelliJ, setup for all of the contained exercises is simple and uniform: just import the project from Git (File > New > Project from Version Control), then set the project SDK to a Java 11 JDK (File > Project Structure > Project SDK). Each exercise is a separate module.
 
 For C++, Windows with MinGW is supported. (TODO: write instructions for C++ IDE setup)

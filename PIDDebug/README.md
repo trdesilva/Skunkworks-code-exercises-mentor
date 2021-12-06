@@ -16,8 +16,8 @@ To run the tests in C++:
 
 To run the tests in Java:
 1. Compile your code into a JAR file by going to Build > Build Artifacts in IntelliJ and building PIDDebug:jar.
-2. Drop the supplied PIDDebugTest.jar file into the same directory as PIDDebug.jar (should be out\artifacts\PIDDebug_jar on Windows).
-3. Right-click on PIDDebugTest.jar in the Project view in IntelliJ and click "Run 'PIDDebugTest.jar'" in the dropdown.
+2. Copy the supplied PIDDebugTest.jar file into the same directory as PIDDebug.jar. This should be out\artifacts\PIDDebug_jar on Windows.
+3. Right-click on PIDDebugTest.jar in the Project view in IntelliJ and click "Run 'PIDDebugTest.jar'" in the dropdown. You can also use the "PID Debug Tests" run configuration if the "Path to JAR" setting is set to PIDDebugTest.jar's path. 
 
 Once the tests run successfully, you're done.
 

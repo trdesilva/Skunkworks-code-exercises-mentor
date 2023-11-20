@@ -13,6 +13,9 @@ Coding and design practice with classes and pointers. Students will learn about 
 # ghost
 A competitive introduction to AI. Students will learn about file I/O and designing data structures for performance while creating bots to play a word game.
 
+# sudoku
+More coding practice with arrays and loops, and an introduction to classes. Students will learn about iterating over more complex data structures and about the difference between class scope and local scope.
+
 ----
 
 For Java with IntelliJ, setup for all of the contained exercises is simple and uniform:
